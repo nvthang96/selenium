@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+   <title>Document</title>
+</head>
+<body>
+    <div id="section" class="section">
+    </div>
+</body>
+<!-- <script src="openCV.js"></script> -->
+<script type="text/javascript">
+    const img = new Image();
+    img.src = './img/download.png';
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    document.getElementById('section').appendChild(canvas)
+    img.onload = function() {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+    cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+
+    // Áp dụng phương pháp threshold để tách nền và đối tượng
+    cv.threshold(gray, binary, 0, 255, cv.THRESH_BINARY_INV + cv.THRESH_OTSU);
+      // Tính toán góc giữa kim ngắn và kim dài để tìm thời gian
+//   const angleBetweenHands = /* tính toán góc giữa kim ngắn và kim dài */;
+//   const hours = Math.floor(angleBetweenHands / (Math.PI / 6));
+//   const minutes = Math.floor((angleBetweenHands - hours * (Math.PI / 6)) / (Math.PI / 30));
+    
+  // Hiển thị thời gian
+  console.log(`Thời gian trên đồng hồ là cv`,cv);
+};
+
+// Nếu có lỗi khi tải ảnh, hiển thị thông báo
+img.onerror = function() {
+  console.log('Không thể tải ảnh đồng hồ');
+};
+    function onOpenCvReady() {
+        document.getElementById('sectiona').innerHTML = 'OpenCV.js status: Ready.';
+    }
+</script>
+
+<script async src="https://docs.opencv.org/4.5.4/opencv.js" onload="onOpenCvReady();"></script>
+</html>
