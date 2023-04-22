@@ -55,4 +55,10 @@ const main = async () =>{
     console.log(block)
 }
 
-main()
+// main()
+
+const url = "https://coldproxy.com/clients/modules/servers/proxypanel/api.php?id=36790&key=F8vLLMq8CCYSstZC59uPGqBb3FBbDqiiIGisVqr1&a=info"
+const getProxy = axios.get(url)
+.then(res =>{
+    console.log(res.data)
+})

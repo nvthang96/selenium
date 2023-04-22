@@ -1,6 +1,22 @@
 const { Worker } = require("worker_threads");
 const fs = require('fs');
 
+// const express = require('express')
+// const app = express()
+
+// app.get('/', function (req, res) {
+//   res.send('Hello World')
+// })
+
+// app.listen(3000)
+
+
+
+
+
+
+
+
 const multiThread =async (count) =>{
   for(let i = 0;i <= count;i++)
   {
@@ -86,4 +102,4 @@ const multiThread =async (count) =>{
 //       }
 // }
 // startDivide(50)
-// multiThread(10)
+multiThread(50)

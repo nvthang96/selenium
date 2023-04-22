@@ -52,4 +52,4 @@ const startDivide = async (filePath,count,nameFile,keyFirst,keySec) =>{
         }
         }
   }
-  startDivide("36701.txt",50,'newProxy','PROXY_HOST','PROXY_PORT')
+  startDivide("36790.txt",50,'newProxy','PROXY_HOST','PROXY_PORT')

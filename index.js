@@ -10,8 +10,8 @@ const axios = require('axios');
 // PROXY_HOST = '201.229.250.21';
 // PROXY_PORT = '8080';
 const proxyS = {
-  "PROXY_HOST" : "23.134.94.60",
-  "PROXY_PORT" : "6206"
+  "PROXY_HOST" : "167.99.228.174",
+  "PROXY_PORT" : "16499"
 }
 const proxyServer = `http://${proxyS["PROXY_HOST"]}:${proxyS["PROXY_PORT"]}`;
 const proxyConfig = proxy.manual({
