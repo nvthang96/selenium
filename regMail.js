@@ -31,7 +31,7 @@ capabilities.setProxy(proxyConfig);
 async function test(){
     const options = new chrome.Options();
     options.addArguments("--disable-notifications",'--disable-blink-features=AutomationControlled')
-    options.addArguments(`--proxy-server=socks4://${socksProxy.ipaddress}:${socksProxy.port}`);
+    // options.addArguments(`--proxy-server=socks4://${socksProxy.ipaddress}:${socksProxy.port}`);
     // options.addArguments('--headless', '--disable-gpu', '--disable-dev-shm-usage', '--no-sandbox');
     const driver = await new webdriver.Builder()
     .forBrowser('chrome')
@@ -40,7 +40,7 @@ async function test(){
     .build();
 
 // Đi đến trang web cần thao tác
-await driver.get('https://mail.tutanota.com/login?noAutoLogin=true&keepSession=true');
+await driver.get('https://mbasic.facebook.com/login');
 // await driver.get('https://checkip.com.vn/');
 // const waitUntilPageLoaded = async () => {
 //     await driver.wait(async () => {
@@ -52,8 +52,8 @@ await driver.get('https://mail.tutanota.com/login?noAutoLogin=true&keepSession=t
     
 //   })
 // }
-await logUpForm(driver)
-await setInput(driver)
+// await logUpForm(driver)
+// await setInput(driver)
 }
 
 const logUpForm = async (driver) =>{

@@ -5,15 +5,21 @@ const chrome = require('selenium-webdriver/chrome');
 const proxy = require('selenium-webdriver/proxy');
 const axios = require('axios');
 
-const PROXY_HOST = '61.7.146.7';
-const PROXY_PORT = '8082';
-
-const proxyServer = `http://${PROXY_HOST}:${PROXY_PORT}`;
+// var PROXY_HOST
+// var PROXY_PORT
+// PROXY_HOST = '201.229.250.21';
+// PROXY_PORT = '8080';
+const proxyS = {
+  "PROXY_HOST" : "23.134.94.60",
+  "PROXY_PORT" : "6206"
+}
+const proxyServer = `http://${proxyS["PROXY_HOST"]}:${proxyS["PROXY_PORT"]}`;
 const proxyConfig = proxy.manual({
-    // http: proxyServer,
+    // http: proxyServer
     https: proxyServer
 });
 
+// const proxyStr = `--proxy-server=http://${PROXY_HOST}:${PROXY_PORT} `
 const capabilities = webdriver.Capabilities.chrome();
 capabilities.setProxy(proxyConfig);
 // Khởi tạo trình duyệt Chrome
@@ -32,6 +38,7 @@ async function test(){
     const options = new chrome.Options();
     options.addArguments("--disable-notifications",'--disable-blink-features=AutomationControlled')
     // options.addArguments('--headless', '--disable-gpu', '--disable-dev-shm-usage', '--no-sandbox');
+    // options.addArguments(proxyStr);
     const driver = await new webdriver.Builder()
     .forBrowser('chrome')
     .setChromeOptions(options)
@@ -39,7 +46,7 @@ async function test(){
     .build();
 
 // Đi đến trang web cần thao tác
-await driver.get('https://www.facebook.com/');
+await driver.get('https://mbasic.facebook.com');
 
 // Tìm và click vào nút có id là "btnSubmit"
 // const el = driver.findElement(webdriver.By.id('email'));
@@ -60,43 +67,43 @@ await driver.get('https://www.facebook.com/');
 //       }, 5000);
 // `);
 
-const setInput = async () =>{
-    const username =await driver.wait(webdriver.until.elementLocated(webdriver.By.css('input[name="email"]')));
-    const pass =await driver.wait(webdriver.until.elementLocated(webdriver.By.css('input[name="pass"]')));
-    const loginClick = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('button[name="login"]')));
-    await username.sendKeys("100091441354667")
-    await pass.sendKeys("handanba")
-    await loginClick.click()
-}
-const waitUntilPageLoaded = async () => {
-    await driver.wait(async () => {
-      const readyState = await driver.executeScript('return document.readyState;');
-      return readyState === 'complete';
-    });
-  };
-  waitUntilPageLoaded().then( async ()=>{
-    await setInput()
-    const checkLogin = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('div[aria-label="Messenger"]')));
-    await driver.get('https://www.facebook.com/pages/creation/?ref_type=launch_point') 
+// const setInput = async () =>{
+//     const username =await driver.wait(webdriver.until.elementLocated(webdriver.By.css('input[name="email"]')));
+//     const pass =await driver.wait(webdriver.until.elementLocated(webdriver.By.css('input[name="pass"]')));
+//     const loginClick = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('button[name="login"]')));
+//     await username.sendKeys("100091441354667")
+//     await pass.sendKeys("handanba")
+//     await loginClick.click()
+// }
+// const waitUntilPageLoaded = async () => {
+//     await driver.wait(async () => {
+//       const readyState = await driver.executeScript('return document.readyState;');
+//       return readyState === 'complete';
+//     });
+//   };
+  // waitUntilPageLoaded().then( async ()=>{
+  //   await setInput()
+  //   const checkLogin = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('div[aria-label="Messenger"]')));
+  //   await driver.get('https://www.facebook.com/pages/creation/?ref_type=launch_point') 
 
-        const pageName = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('label[aria-label="Tên Trang (bắt buộc)"] input')));
-        await pageName.sendKeys("Selela EmClacon")
-        const category = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('label[aria-label="Hạng mục (Bắt buộc)"] input')));
-        await category.sendKeys("K")
-        const pickRole = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('ul[aria-label="7 gợi ý tìm kiếm"] li')));
-        await pickRole.click()
-        const createPage = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('div[aria-label="Tạo Trang"]')));
-        await createPage.click()
-        // const choiceOption = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('input[aria-label="Không có giờ làm việc"]')));
-        // await choiceOption.click()
-        // const btn_Next = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('div[aria-label="Tiếp"]')));
-        // console.log('btn_Next',btn_Next)
-        // await btn_Next.click()
-        // const img = await driver.wait(webdriver.until.elementLocated(webdriver.By.xpath('//*[@id="mount_0_0_YH"]/div/div[1]/div/div[5]/div/div/div[3]/div/div/div[1]/div[1]/div[1]/div/div[2]/div[1]/div[2]/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/input')));
-        await driver.get('https://www.facebook.com/pages/creation/?ref_type=launch_point')
-        let alert = await driver.switchTo().alert();
-        console.log(alert)
-        await alert.dismiss();
+  //       const pageName = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('label[aria-label="Tên Trang (bắt buộc)"] input')));
+  //       await pageName.sendKeys("Selela EmClacon")
+  //       const category = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('label[aria-label="Hạng mục (Bắt buộc)"] input')));
+  //       await category.sendKeys("K")
+  //       const pickRole = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('ul[aria-label="7 gợi ý tìm kiếm"] li')));
+  //       await pickRole.click()
+  //       const createPage = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('div[aria-label="Tạo Trang"]')));
+  //       await createPage.click()
+  //       // const choiceOption = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('input[aria-label="Không có giờ làm việc"]')));
+  //       // await choiceOption.click()
+  //       // const btn_Next = await driver.wait(webdriver.until.elementLocated(webdriver.By.css('div[aria-label="Tiếp"]')));
+  //       // console.log('btn_Next',btn_Next)
+  //       // await btn_Next.click()
+  //       // const img = await driver.wait(webdriver.until.elementLocated(webdriver.By.xpath('//*[@id="mount_0_0_YH"]/div/div[1]/div/div[5]/div/div/div[3]/div/div/div[1]/div[1]/div[1]/div/div[2]/div[1]/div[2]/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/input')));
+  //       await driver.get('https://www.facebook.com/pages/creation/?ref_type=launch_point')
+  //       let alert = await driver.switchTo().alert();
+  //       console.log(alert)
+  //       await alert.dismiss();
 
     // console.log("checkLogin",img)
 
@@ -115,7 +122,7 @@ const waitUntilPageLoaded = async () => {
     // await driver.wait(until.elementLocated(By.xpath("//h1[contains(text(),'Welcome to the new page!')]")));
     // driver.get('https://www.facebook.com/pages/creation/?ref_type=launch_point') 
    
-  })
+  // })
 }
 
 // const test1 = (a,b) =>{
