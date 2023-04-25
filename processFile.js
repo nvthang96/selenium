@@ -24,8 +24,8 @@ const startDivide = async (filePath,count,nameFile,keyFirst,keySec) =>{
           })
             for(let j = (space*i);j < space*(i+1) ;j++)
             {
-                const [keyFirst, keySec] = await result[j].split(':');
-                await temp.push({'PROXY_HOST':keyFirst,'PROXY_PORT':keySec})
+                const [key1, key2] = await result[j].split(':');
+                await temp.push({'PROXY_HOST':key1,'PROXY_PORT':key2})
                 
             }
             await fs.writeFile(`${nameFile}${i}.json`,JSON.stringify(temp),'utf8', function (err) {
@@ -52,4 +52,4 @@ const startDivide = async (filePath,count,nameFile,keyFirst,keySec) =>{
         }
         }
   }
-  startDivide("36790.txt",50,'newProxy','PROXY_HOST','PROXY_PORT')
+  startDivide("36989.txt",10,'newProxy','email','password')

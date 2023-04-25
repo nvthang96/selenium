@@ -10,8 +10,8 @@ const axios = require('axios');
 // PROXY_HOST = '201.229.250.21';
 // PROXY_PORT = '8080';
 const proxyS = {
-  "PROXY_HOST" : "167.99.228.174",
-  "PROXY_PORT" : "16499"
+  "PROXY_HOST" : "24.199.92.238",
+  "PROXY_PORT" : "12004"
 }
 const proxyServer = `http://${proxyS["PROXY_HOST"]}:${proxyS["PROXY_PORT"]}`;
 const proxyConfig = proxy.manual({
@@ -34,11 +34,13 @@ capabilities.setProxy(proxyConfig);
 //   listName = data
 // })
 
+
 async function test(){
     const options = new chrome.Options();
     options.addArguments("--disable-notifications",'--disable-blink-features=AutomationControlled')
     // options.addArguments('--headless', '--disable-gpu', '--disable-dev-shm-usage', '--no-sandbox');
     // options.addArguments(proxyStr);
+    // options.addArguments(`--proxy-server=http://192.168.1.4:8000`);
     const driver = await new webdriver.Builder()
     .forBrowser('chrome')
     .setChromeOptions(options)
@@ -47,7 +49,9 @@ async function test(){
 
 // Đi đến trang web cần thao tác
 await driver.get('https://mbasic.facebook.com');
+const cookieString = "sb=M1s-ZKtEWB_d2BVEa0pBAscA; datr=M1s-ZMW3JVdK71-SEWpETyeB; locale=vi_VN; c_user=100002841788658; m_page_voice=100002841788658; xs=30%3AptT90ToygYs1LQ%3A2%3A1682134695%3A-1%3A6345%3A%3AAcVQ15snZlF0yNTGs0FI_hG4EdONC6hj1lLcbq7La5g; fr=0RKyDyXoKoCdHJpvg.AWXIoLhLvZrK_WkOyrjBgax-hbY.BkRjW-.YE.AAA.0.0.BkRjZs.AWXc6JETWKo; presence=C%7B%22t3%22%3A%5B%5D%2C%22utc3%22%3A1682323047951%2C%22v%22%3A1%7D; wd=786x880";
 
+// Tạo đối tượng cookie từ chuỗi cookie
 // Tìm và click vào nút có id là "btnSubmit"
 // const el = driver.findElement(webdriver.By.id('email'));
 // const ac =await driver.wait(webdriver.until.elementLocated(webdriver.By.css('input[name="email"]')));

@@ -9,7 +9,8 @@
     "dev": "node index.js",
     "file": "node processFile.js",
     "testp": "node testproxy.js",
-    "selenium": "node checkFB.js"
+    "selenium": "node checkFB.js",
+    "proxyserver": "nodemon proxyServer.js"
   },
   "author": "",
   "license": "ISC",
@@ -21,15 +22,20 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
+    "http": "^0.0.1-security",
+    "http-proxy": "^1.18.1",
+    "https": "^1.0.0",
     "https-proxy-agent": "^5.0.1",
     "js-cookie": "^3.0.1",
     "jsdom": "^21.1.1",
+    "nodemon": "^2.0.22",
     "selenium-webdriver": "^4.8.2",
     "socks": "^2.7.1",
     "socks-proxy-agent": "^7.0.0",
     "socks4": "^0.1.1",
     "threads": "^1.7.0",
     "tough-cookie": "^4.1.2",
+    "url": "^0.11.0",
     "web-worker": "^1.2.0",
     "worker-thread": "^1.1.0"
   }

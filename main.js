@@ -32,8 +32,7 @@ const multiThread =async (count) =>{
         return;
       }
     })
-
-
+    
     const seprateThread = new Worker('./checkMBasic.js');
     const data = await fs.readFileSync(`newData${i}.json`, { encoding: 'utf-8' });
     const proxy = await fs.readFileSync(`newProxy${i}.json`, { encoding: 'utf-8' });
@@ -43,6 +42,9 @@ const multiThread =async (count) =>{
       count:i
     }
     seprateThread.postMessage(obj)
+
+  
+
   }
   }
   
@@ -102,4 +104,4 @@ const multiThread =async (count) =>{
 //       }
 // }
 // startDivide(50)
-multiThread(50)
+multiThread(10)
